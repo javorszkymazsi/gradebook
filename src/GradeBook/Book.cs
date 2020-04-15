@@ -8,28 +8,34 @@ namespace GradeBook
         private List<double> grades = new List<double>();
         private double lowestGrade;
         private double highestGrade;
+
         public string Name { get; private set; }
 
         public Book(string name)
         {
             Name = name;
+            lowestGrade = double.MaxValue;
+            highestGrade = double.MinValue;
         }
 
-        internal void ShowStatistics()
+        public void ShowStatistics()
         {
             System.Console.WriteLine($"{Name}'s grade average is {CalculateAverage():N2}");
             System.Console.WriteLine($"{Name}'s highest grade is {GetHighestGrade():N2}");
             System.Console.WriteLine($"{Name}'s lowest grade is {GetLowestGrade():N2}");
         }
 
+        public Statistics GetStatistics()
+        {
+            Statistics result = new Statistics();
+            result.Average = CalculateAverage();
+            result.HighestGrade = highestGrade;
+            result.LowestGrade = lowestGrade;
+            return result;
+        }
+
         public void AddGrade(double grade)
         {
-            if (grades.Count == 0)
-            {
-                lowestGrade = grade;
-                highestGrade = grade;
-            }
-
             grades.Add(grade);
             highestGrade = Math.Max(highestGrade, grade);
             lowestGrade = Math.Min(lowestGrade, grade);
@@ -52,6 +58,11 @@ namespace GradeBook
 
         public double CalculateAverage()
         {
+            if (grades.Count == 0)
+            {
+                return 0;
+            }
+
             double result = 0.0;
             foreach(var grade in grades)
             {
